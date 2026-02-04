@@ -2,9 +2,9 @@
     {
         "id": 1,
         "name": "王小明",
-        "phone": "0987-654-321",
+        "phone": "0912345678",
         "email": "xiaoming@example.com",
-        "updated_at": "2026-02-04T10:01:27.051Z"
+        "updated_at": "2026-02-04T12:12:53.412Z"
     },
     {
         "id": 2,

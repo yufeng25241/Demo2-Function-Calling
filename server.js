@@ -21,40 +21,60 @@ app.get('/api/customers', async (req, res) => {
 
 // Chat with Ollama (Function Calling)
 app.post('/api/chat', async (req, res) => {
-    const { message, model = 'llama3.2' } = req.body;
+    const { message, model = process.env.OLLAMA_MODEL || 'gpt-oss:20b' } = req.body;
 
     try {
-        const ollamaRes = await fetch('http://127.0.0.1:11434/api/chat', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                model: model,
-                messages: [{ role: 'user', content: message }],
-                stream: false,
-                tools: [
-                    {
-                        type: 'function',
-                        function: {
+        const OLLAMA_URL = process.env.OLLAMA_URL || 'http://127.0.0.1:11434';
+
+        // Support a mock mode for development when Ollama is not available
+        let data;
+        if (process.env.MOCK_OLLAMA === 'true') {
+            // Simulate a response that calls the update_customer tool
+            data = {
+                message: {
+                    content: 'Mock: I will update the customer phone.',
+                    tool_calls: [
+                        {
                             name: 'update_customer',
-                            description: 'Update a customer\'s phone number',
-                            parameters: {
-                                type: 'object',
-                                properties: {
-                                    name: { type: 'string', description: 'The name of the customer' },
-                                    phone: { type: 'string', description: 'The new phone number' }
-                                },
-                                required: ['name', 'phone']
+                            arguments: JSON.stringify({ name: '王小明', phone: '0999-999-999' })
+                        }
+                    ]
+                }
+            };
+        } else {
+            const ollamaRes = await fetch(`${OLLAMA_URL}/api/chat`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    model: model,
+                    messages: [{ role: 'user', content: message }],
+                    stream: false,
+                    tools: [
+                        {
+                            type: 'function',
+                            function: {
+                                name: 'update_customer',
+                                description: 'Update a customer\'s phone number',
+                                parameters: {
+                                    type: 'object',
+                                    properties: {
+                                        name: { type: 'string', description: 'The name of the customer' },
+                                        phone: { type: 'string', description: 'The new phone number' }
+                                    },
+                                    required: ['name', 'phone']
+                                }
                             }
                         }
-                    }
-                ]
-            })
-        });
+                    ]
+                })
+            });
 
-        const data = await ollamaRes.json();
-        const responseMessage = data.message;
+            data = await ollamaRes.json();
+        }
 
-        if (responseMessage.tool_calls && responseMessage.tool_calls.length > 0) {
+        const responseMessage = data && data.message ? data.message : null;
+
+        if (responseMessage && responseMessage.tool_calls && responseMessage.tool_calls.length > 0) {
             // Found intent to update
             const toolCall = responseMessage.tool_calls[0];
             return res.json({
@@ -63,10 +83,10 @@ app.post('/api/chat', async (req, res) => {
             });
         }
 
-        // Normal response
+        // Normal response or fallback
         res.json({
             type: 'message',
-            content: responseMessage.content
+            content: responseMessage ? responseMessage.content : 'No response from Ollama.'
         });
 
     } catch (err) {
