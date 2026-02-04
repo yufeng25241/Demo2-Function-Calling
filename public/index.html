@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Function Calling Demo</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <!-- Window A: Customer Data -->
+        <section class="window glass" id="window-a">
+            <div class="window-header">
+                <h2>🗂️ 視窗 A：客人資料</h2>
+                <button id="refresh-btn">🔄 重新整理</button>
+            </div>
+            <div class="table-container">
+                <table id="customer-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>姓名</th>
+                            <th>電話</th>
+                            <th>最後更新</th>
+                        </tr>
+                    </thead>
+                    <tbody id="customer-list">
+                        <!-- Data will be injected here -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Window B: AI Assistant -->
+        <section class="window glass" id="window-b">
+            <div class="window-header">
+                <h2>🤖 視窗 B：AI 助手</h2>
+            </div>
+            <div class="chat-container">
+                <div id="chat-history">
+                    <div class="message system">您好！我是您的 AI 助手。您可以說：「幫我修改王小明的電話為 0912345678」</div>
+                </div>
+                <div class="chat-input-area">
+                    <input type="text" id="user-input" placeholder="輸入指令...">
+                    <button id="send-btn">發送</button>
+                </div>
+            </div>
+        </section>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>

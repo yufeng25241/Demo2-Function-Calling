@@ -1,0 +1,23 @@
+[
+    {
+        "id": 1,
+        "name": "王小明",
+        "phone": "0987-654-321",
+        "email": "xiaoming@example.com",
+        "updated_at": "2026-02-04T10:01:27.051Z"
+    },
+    {
+        "id": 2,
+        "name": "李美玲",
+        "phone": "0922-111-222",
+        "email": "meiling@example.com",
+        "updated_at": "2026-02-04T08:00:00.000Z"
+    },
+    {
+        "id": 3,
+        "name": "張三",
+        "phone": "0933-444-555",
+        "email": "zhangsan@example.com",
+        "updated_at": "2026-02-04T08:00:00.000Z"
+    }
+]
